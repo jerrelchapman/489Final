@@ -1,5 +1,8 @@
 const sequelize = require("../db");
 const { Model, DataTypes } = require("sequelize");
+const Employee = require("../models/Employee");
+
+
 
 //TODO: You need to modify this model (or create a new one to suit your needs)
 class Course extends Model {
@@ -46,6 +49,10 @@ Course.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    instructor: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
   },
   {
     sequelize,

@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { body, validationResult } = require("express-validator");
 const Course = require("../models/Course");
+const Employee = require("../models/Employee");
 
 /* Validators */
 //TODO: THis is where you need to implement your custom validators
@@ -58,7 +59,13 @@ router.post(
 router.get("/:recordid", async function (req, res, next) {
   const course = await Course.findCourse(req.params.recordid);
   if (course) {
-    res.render("coursedetails", { course });
+    const employee = await Employee.findEmployee(course.instructor);
+    if (employee) {
+      res.render("coursedetails", { course, employee });
+    } else {
+      res.redirect("/?msg=employee+not+found");
+    }
+
   } else {
     res.redirect("/?msg=course+not+found");
   }

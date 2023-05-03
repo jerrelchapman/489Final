@@ -5,6 +5,7 @@ const sequelize = require("./db");
 
 var coursesRouter = require("./routes/courses");
 const Course = require("./models/Course");
+const Employee = require("./models/Employee");
 
 var app = express();
 
@@ -36,13 +37,22 @@ app.use(function (err, req, res, next) {
 
 async function setup() {
   //TODO: This where you will create your very first instance
+  const jerrel = await Employee.create({
+    firstname: "Jerrel",
+    lastname: "Chapman",
+    salary: 75000,
+    department: "EECS",
+  });
+  // console.log(jerrel.employeeid);
   const webdev = await Course.create({
     courseid: "CPTS489",
     coursename: "Web Development",
     semester: "Spring",
     coursedesc: "Introduction to Web Development",
     enrollnum: 80,
+    instructor: jerrel.employeeid,
   });
+  // console.log(webdev.instructor);
 }
 
 sequelize.sync({ force: true }).then(() => {
