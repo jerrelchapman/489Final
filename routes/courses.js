@@ -19,6 +19,13 @@ const enrollnumValidator = async (value, { req }) => {
   }
 };
 
+const newValidator = async (value, { req }) => {
+  const newField = req.body.newField1;
+  if (!newField) {
+    throw new Error("TempError");
+  }
+};
+
 router.get("/", async function (req, res, next) {
   const courses = await Course.findAll();
   if (req.query.msg) {
@@ -32,6 +39,7 @@ router.post(
   //TODO: This is where you will be using your custom validators
   body("courseid").custom(courseidValidator),
   body("enrollnum").custom(enrollnumValidator),
+  body("newField1").custom(newValidator),
   async function (req, res, next) {
     try {
       const result = validationResult(req);
@@ -41,12 +49,19 @@ router.post(
       if (!result.isEmpty()) {
         throw new Error(errors2[0]);
       } else {
+        const employee = await Employee.create({
+          firstname: req.body.newField1,
+          lastname: req.body.newField2,
+          salary: req.body.newField3,
+          department: req.body.newField4,
+        });
         await Course.create({
           courseid: req.body.courseid,
           coursename: req.body.coursename,
           semester: req.body.semester,
           coursedesc: req.body.coursedesc,
           enrollnum: req.body.enrollnum,
+          instructor: employee.employeeid,
         });
         res.redirect("/?msg=success");
       }
